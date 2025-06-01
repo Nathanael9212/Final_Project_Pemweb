@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #fffaf4;
+    color: #3e2d2d;
+  }
+  
+  /* Header */
+  header {
+    background: #4a2f24;
+    color: white;
+    padding: 20px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  header .logo {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  
+  header nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+  }
+  
+  /* Slider / Marquee */
+  .slider {
+    background: #ffddaa;
+    padding: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .slide-text {
+    white-space: nowrap;
+    animation: slide-left 10s linear infinite;
+  }
+  
+  @keyframes slide-left {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+  
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 50px 20px;
+    background: #fdf5e6;
+  }
+  
+  .hero h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+  }
+  
+  .hero p {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+  }
+  
+  .hero-buttons button {
+    padding: 10px 20px;
+    border: none;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .hero-buttons .secondary {
+    background: none;
+    border: 2px solid #4a2f24;
+    color: #4a2f24;
+  }
+  
+  .hero-buttons button {
+    background: #4a2f24;
+    color: white;
+  }
+  
+  /* Menu Grid */
+  .menu {
+    padding: 40px 5%;
+  }
+  
+  .menu h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  
+  .card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: 0.3s;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .img {
+    background: url('https://via.placeholder.com/300x200') center/cover no-repeat;
+    height: 150px;
+  }
+  
+  .card-content {
+    padding: 15px;
+  }
+  
+  .card-content h3 {
+    margin-bottom: 10px;
+  }
+  
+  .btn-detail {
+    margin-top: 10px;
+    background: #4a2f24;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
