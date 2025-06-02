@@ -41,7 +41,7 @@ $stmt = $pdo->query("SELECT * FROM menu ORDER BY kategori");
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            transition: background 0.3s ease;
+            transition: background-color 0.3s ease;
         }
 
         a.button:hover {
