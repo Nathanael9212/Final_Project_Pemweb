@@ -102,10 +102,15 @@ $result = mysqli_query($koneksi, $query);
         border-radius: 20px;
         font-size: 0.8em;
         font-weight: bold;
+        transition: transform 0,3s ease, color 0,3s ease, background-color 0,3s ease;
     }
     .best-seller {
         background-color: #ffe0b2;
         color: #e65100;
+    }
+    .badge:hover{
+        background-color: #ffcc80;
+        color: #f5f5f5; 
     }
     .recommended {
         background-color: #c8e6c9;
