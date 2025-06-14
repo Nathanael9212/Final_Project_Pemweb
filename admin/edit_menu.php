@@ -1,85 +1,64 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['jenis_user']) || $_SESSION['jenis_user'] !== 'admin') {
+    header("Location: ../login.php");
+    exit;
+}
+
 require_once '../config/db.php';
 
 if (!isset($_GET['id'])) {
-    die("ID menu tidak ditemukan.");
+    header("Location: manajemen_produk.php");
+    exit;
 }
 
-$id = intval($_GET['id']);
+$id = $_GET['id'];
 
-// Ambil data menu berdasarkan id
-$sql = "SELECT * FROM menu WHERE id = :id";
-$stmt = $pdo->prepare($sql);
-$stmt->execute([':id' => $id]);
-$menu = $stmt->fetch(PDO::FETCH_ASSOC);
+// Ambil data produk
+$stmt = $pdo->prepare("SELECT * FROM menu WHERE id = ?");
+$stmt->execute([$id]);
+$produk = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$menu) {
-    die("Menu tidak ditemukan.");
+if (!$produk) {
+    echo "Produk tidak ditemukan.";
+    exit;
 }
 
-$error = '';
-
-if (isset($_POST['submit'])) {
-    $nama = $_POST['nama'];
+// Proses form saat disubmit
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nama = $_POST['nama_produk'];
     $kategori = $_POST['kategori'];
     $harga_hot = $_POST['harga_hot'] ?: null;
     $harga_cold = $_POST['harga_cold'] ?: null;
+    $is_best_seller = isset($_POST['is_best_seller']) ? 1 : 0;
+    $is_recommended = isset($_POST['is_recommended']) ? 1 : 0;
 
-    $gambar_lama = $menu['gambar']; // Nama file lama
+    $gambar_baru = $produk['gambar'];
 
-    // Proses upload gambar jika ada file baru di-upload
-    if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
-        $file_tmp = $_FILES['gambar']['tmp_name'];
-        $file_name = basename($_FILES['gambar']['name']);
-        $file_size = $_FILES['gambar']['size'];
-        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-        $allowed_ext = ['jpg', 'jpeg', 'png', 'gif'];
+    if (!empty($_FILES['gambar']['name'])) {
+        $target_dir = "../uploads/";
+        $gambar_name = uniqid() . '_' . basename($_FILES["gambar"]["name"]);
+        $target_file = $target_dir . $gambar_name;
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-        if (!in_array($file_ext, $allowed_ext)) {
-            $error = "Tipe file tidak diizinkan. Hanya JPG, PNG, GIF yang diperbolehkan.";
-        } elseif ($file_size > 2 * 1024 * 1024) {
-            $error = "Ukuran file maksimal 2MB.";
-        } else {
-            // Buat nama file unik agar tidak bentrok
-            $new_file_name = uniqid('menu_', true) . '.' . $file_ext;
-            $upload_dir = '../uploads/';
-            $upload_path = $upload_dir . $new_file_name;
-
-            // Pindahkan file ke folder uploads
-            if (move_uploaded_file($file_tmp, $upload_path)) {
-                // Hapus file lama jika ada dan beda nama
-                if ($gambar_lama && file_exists($upload_dir . $gambar_lama)) {
-                    unlink($upload_dir . $gambar_lama);
-                }
-                $gambar_lama = $new_file_name;
-            } else {
-                $error = "Gagal mengupload file.";
+        // Validasi file
+        $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+        if (in_array($imageFileType, $allowed_types) && move_uploaded_file($_FILES["gambar"]["tmp_name"], $target_file)) {
+            // Hapus gambar lama jika ada
+            if (!empty($produk['gambar']) && file_exists("../uploads/" . $produk['gambar'])) {
+                unlink("../uploads/" . $produk['gambar']);
             }
+            $gambar_baru = $gambar_name;
         }
     }
 
-    if (!$error) {
-        $update_sql = "UPDATE menu SET 
-            nama_produk = :nama,
-            kategori = :kategori,
-            harga_hot = :harga_hot,
-            harga_cold = :harga_cold,
-            gambar = :gambar
-            WHERE id = :id";
+    // Update database
+    $stmt = $pdo->prepare("UPDATE menu SET nama_produk = ?, kategori = ?, harga_hot = ?, harga_cold = ?, is_best_seller = ?, is_recommended = ?, gambar = ? WHERE id = ?");
+    $stmt->execute([$nama, $kategori, $harga_hot, $harga_cold, $is_best_seller, $is_recommended, $gambar_baru, $id]);
 
-        $update_stmt = $pdo->prepare($update_sql);
-        $update_stmt->execute([
-            ':nama' => $nama,
-            ':kategori' => $kategori,
-            ':harga_hot' => $harga_hot,
-            ':harga_cold' => $harga_cold,
-            ':gambar' => $gambar_lama,
-            ':id' => $id
-        ]);
-
-        header("Location: dashboard.php");
-        exit;
-    }
+    header("Location: manajemen_produk.php");
+    exit;
 }
 ?>
 
@@ -87,115 +66,136 @@ if (isset($_POST['submit'])) {
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Menu - Ngacup</title>
+    <title>Edit Produk</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            padding: 40px;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
         }
 
-        .form-container {
-            background-color: white;
-            max-width: 400px;
-            margin: auto;
-            padding: 25px;
-            border-radius: 8px;
+        .container {
+            max-width: 700px;
+            margin: 80px auto;
+            background-color: #fff;
+            padding: 25px 30px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
         }
 
         h2 {
-            text-align: center;
+            margin-top: 0;
+            margin-bottom: 20px;
             color: #333;
         }
 
-        label {
+        form label {
             display: block;
-            margin-top: 15px;
+            margin: 10px 0 6px;
             font-weight: bold;
         }
 
-        input[type="text"],
-        input[type="number"],
-        input[type="file"] {
+        form input[type="text"],
+        form input[type="number"],
+        form select,
+        form input[type="file"] {
             width: 100%;
             padding: 10px;
-            margin-top: 5px;
             border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
+            border-radius: 6px;
+            margin-bottom: 15px;
         }
 
-        img.preview {
-            max-width: 100%;
-            margin-top: 10px;
-            border-radius: 5px;
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
         }
 
-        button {
-            margin-top: 20px;
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
+        .checkbox-group label {
+            font-weight: normal;
+        }
+
+        .btn {
+            padding: 10px 18px;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: 600;
             cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        a.back-link {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
             text-decoration: none;
-            color: #555;
+            display: inline-block;
+            transition: background 0.3s ease;
         }
 
-        a.back-link:hover {
-            text-decoration: underline;
+        .btn-update {
+            background-color: #007bff;
         }
 
-        .error {
-            color: red;
+        .btn-back {
+            background-color: #6c757d;
+            margin-left: 10px;
+        }
+
+        .btn:hover {
+            filter: brightness(1.1);
+        }
+
+        .product-img-preview {
             margin-top: 10px;
-            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .product-img-preview img {
+            max-width: 120px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
     </style>
 </head>
 <body>
 
-<div class="form-container">
-    <h2>Edit Menu</h2>
-    <?php if ($error): ?>
-        <div class="error"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
-    <form method="POST" enctype="multipart/form-data">
-        <label for="nama">Nama Produk:</label>
-        <input type="text" id="nama" name="nama" required value="<?= htmlspecialchars($menu['nama_produk']) ?>">
+<div class="container">
+    <h2>Edit Produk</h2>
+    <form action="" method="post" enctype="multipart/form-data">
+        <label for="nama_produk">Nama Produk:</label>
+        <input type="text" name="nama_produk" value="<?= htmlspecialchars($produk['nama_produk']) ?>" required>
 
         <label for="kategori">Kategori:</label>
-        <input type="text" id="kategori" name="kategori" required value="<?= htmlspecialchars($menu['kategori']) ?>">
+        <select name="kategori" required>
+            <option value="">-- Pilih Kategori --</option>
+            <option value="Coffee" <?= $produk['kategori'] === 'Coffee' ? 'selected' : '' ?>>Coffee</option>
+            <option value="Non-Coffee" <?= $produk['kategori'] === 'Non-Coffee' ? 'selected' : '' ?>>Non-Coffee</option>
+            <option value="Snack" <?= $produk['kategori'] === 'Snack' ? 'selected' : '' ?>>Snack</option>
+        </select>
 
         <label for="harga_hot">Harga Hot:</label>
-        <input type="number" id="harga_hot" name="harga_hot" value="<?= htmlspecialchars($menu['harga_hot']) ?>">
+        <input type="number" name="harga_hot" value="<?= $produk['harga_hot'] ?>">
 
         <label for="harga_cold">Harga Cold:</label>
-        <input type="number" id="harga_cold" name="harga_cold" value="<?= htmlspecialchars($menu['harga_cold']) ?>">
+        <input type="number" name="harga_cold" value="<?= $produk['harga_cold'] ?>">
 
-        <label for="gambar">Foto Produk (jpg, png, gif max 2MB):</label>
-        <input type="file" id="gambar" name="gambar" accept=".jpg,.jpeg,.png,.gif">
-        <?php if ($menu['gambar'] && file_exists('../uploads/' . $menu['gambar'])): ?>
-            <img src="../uploads/<?= htmlspecialchars($menu['gambar']) ?>" alt="Foto Produk" class="preview">
-        <?php endif; ?>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="is_best_seller" <?= $produk['is_best_seller'] ? 'checked' : '' ?>> Best Seller</label>
+            <label><input type="checkbox" name="is_recommended" <?= $produk['is_recommended'] ? 'checked' : '' ?>> Recommended</label>
+        </div>
 
-        <button type="submit" name="submit">Update</button>
+        <label>Gambar Saat Ini:</label>
+        <div class="product-img-preview">
+            <?php if (!empty($produk['gambar']) && file_exists("../uploads/" . $produk['gambar'])): ?>
+                <img src="../uploads/<?= htmlspecialchars($produk['gambar']) ?>" alt="Gambar Produk">
+            <?php else: ?>
+                <em>Tidak ada gambar</em>
+            <?php endif; ?>
+        </div>
+
+        <label for="gambar">Ganti Gambar:</label>
+        <input type="file" name="gambar" accept="image/*">
+
+        <button type="submit" class="btn btn-update">Simpan Perubahan</button>
+        <a href="manajemen_produk.php" class="btn btn-back">← Kembali</a>
     </form>
-    <a class="back-link" href="dashboard.php">← Kembali ke Dashboard</a>
 </div>
 
 </body>
