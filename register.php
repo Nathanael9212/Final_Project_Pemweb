@@ -22,7 +22,7 @@ session_start();
     }
 
     body {
-        background: url('uploads/cafe2.webp') no-repeat center center fixed;
+        background: url('uploads/foto_login.png') no-repeat center center fixed;
         background-size: cover;
         display: flex;
         justify-content: center;
