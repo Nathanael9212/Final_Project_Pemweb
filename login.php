@@ -13,7 +13,7 @@ session_start();
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body, html { height: 100%; font-family: 'Poppins', sans-serif; }
     body {
-        background: url('uploads/cafe2.webp') no-repeat center center fixed;
+        background: url('uploads/foto_depan.png') no-repeat center center fixed;
         background-size: cover;
         display: flex; justify-content: center; align-items: center;
         color: #3e2f1c;

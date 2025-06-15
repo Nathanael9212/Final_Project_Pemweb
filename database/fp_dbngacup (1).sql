@@ -73,21 +73,21 @@ CREATE TABLE `menu` (
 INSERT INTO `menu` (`id`, `nama_produk`, `kategori`, `harga_hot`, `harga_cold`, `is_best_seller`, `is_recommended`, `gambar`) VALUES
 (1, 'Americano', 'Kopi Aja', 13000, 19000, 0, 1, 'menu_683bd38eae6ce0.30156299.jpg'),
 (2, 'Cappuccino', 'Coffee', 19000, 22000, 0, 1, '68453586ed08b_R.jpeg'),
-(3, 'Magic Latte', 'Kopi Aja', 28000, NULL, 1, 0, NULL),
-(4, 'Teh Lychee', 'Teh Teh An', 16000, 20000, 1, 0, NULL),
-(5, 'Teh Lemon', 'Teh Teh An', 16000, 20000, 0, 0, NULL),
-(6, 'Teh Peach', 'Teh Teh An', 16000, 20000, 0, 0, NULL),
-(7, 'Soda Jeruk', 'Seger Segeran', NULL, 10000, 1, 0, NULL),
-(8, 'Soda Strawberry', 'Seger Segeran', NULL, 10000, 0, 0, NULL),
-(9, 'Soda Blue', 'Seger Segeran', NULL, 10000, 0, 0, NULL),
-(10, 'Indomie', 'Maem', NULL, 10000, 0, 0, NULL),
-(11, 'Indomie Telor', 'Maem', NULL, 12000, 0, 0, NULL),
-(12, 'Nasi Goreng', 'Maem', NULL, 15000, 1, 0, NULL),
-(13, 'Brownies', 'Nyemil', NULL, 20000, 0, 1, NULL),
-(14, 'Singkong Goreng', 'Nyemil', NULL, 8000, 0, 0, NULL),
-(15, 'Tahu Crispy', 'Nyemil', NULL, 10000, 0, 0, NULL),
-(16, 'es teh', 'minuman', 20000, 30000, 0, 0, NULL),
-(17, 'kopi', 'minuman', 10000, 12000, 0, 0, NULL);
+(3, 'Magic Latte', 'Kopi Aja', 28000, NULL, 1, 0, 'latte.jpeg'),
+(4, 'Teh Lychee', 'Teh Teh An', 16000, 20000, 1, 0, 'leci.jpeg'),
+(5, 'Teh Lemon', 'Teh Teh An', 16000, 20000, 0, 0, 'lemon.jpeg'),
+(6, 'Teh Peach', 'Teh Teh An', 16000, 20000, 0, 0, 'peach.jpeg'),
+(7, 'Soda Jeruk', 'Seger Segeran', NULL, 10000, 1, 0, 'jeruk.jpeg'),
+(8, 'Soda Strawberry', 'Seger Segeran', NULL, 10000, 0, 0, 'strawberry.jpeg'),
+(9, 'Soda Blue', 'Seger Segeran', NULL, 10000, 0, 0, 'sodablue.jpg'),
+(10, 'Indomie', 'Maem', NULL, 10000, 0, 0, 'indomie1.jpg'),
+(11, 'Indomie Telor', 'Maem', NULL, 12000, 0, 0, 'indomie2.jpg'),
+(12, 'Nasi Goreng', 'Maem', NULL, 15000, 1, 0, 'nasgor.jpeg'),
+(13, 'Brownies', 'Nyemil', NULL, 20000, 0, 1, 'brownies.jpg'),
+(14, 'Singkong Goreng', 'Nyemil', NULL, 8000, 0, 0, 'singkong.jpeg'),
+(15, 'Tahu Crispy', 'Nyemil', NULL, 10000, 0, 0, 'tahu.jpeg'),
+(16, 'Es teh', 'minuman', 20000, 30000, 0, 0, 'esteh.jpg'),
+(17, 'kopi', 'minuman', 10000, 12000, 0, 0, 'kopi.jpeg'),;
 
 -- --------------------------------------------------------
 
