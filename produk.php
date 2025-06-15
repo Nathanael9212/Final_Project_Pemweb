@@ -1,6 +1,6 @@
 <?php
 session_start();
-$koneksi = mysqli_connect("localhost", "root", "", "fp_dbngacup");
+$koneksi = mysqli_connect("localhost", "root", "", "fp_dbngacup", 3307);
 if (!$koneksi) {
     die("Koneksi gagal: " . mysqli_connect_error());
 }
@@ -99,7 +99,7 @@ $result = mysqli_query($koneksi, $query);
             if (!empty($menu['gambar']) && file_exists($gambarPath)): ?>
               <img src="<?= htmlspecialchars($gambarPath) ?>" alt="<?= htmlspecialchars($menu['nama_produk']) ?>" />
             <?php else: ?>
-              <img src="assets/default-coffee.jpg" alt="Default Image" />
+              <img src="uploads/default-coffee.jpg" alt="Default Image" />
             <?php endif; ?>
 
             <h3><?= htmlspecialchars($menu['nama_produk']) ?></h3>
