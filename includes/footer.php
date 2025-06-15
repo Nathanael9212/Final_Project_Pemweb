@@ -1,8 +1,3 @@
-<footer class="main-footer">
-        <div class="container">
-            <p>&copy; <?php echo date('Y'); ?> TUKU. All rights reserved.</p>
-            </div>
-    </footer>
-
-    </body>
-</html>
+<footer style="text-align:center; padding:20px; background:#f0f0f0;">
+    <p>© <?= date("Y") ?> Cafe Shop</p>
+</footer>
