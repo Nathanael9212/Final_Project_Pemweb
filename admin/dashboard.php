@@ -1,130 +1,115 @@
 <?php
-session_start();
-if (!isset($_SESSION['admin'])) {
-    header("Location: ../login.php");
-    exit;
-}
-
-require_once '../includes/header.php';
-require_once '../config/db.php';
-
-// Ambil semua data menu
-$stmt = $pdo->query("SELECT * FROM menu ORDER BY kategori");
+// Simulasi data (bisa diganti dengan query database nanti)
+$totalPendapatan = 1250000;
+$totalPesanan = 325;
+$persenPenjualan = 47;
+$pengeluaran = 500000;
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard Admin - Ngacup</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8f9fa;
-            padding: 30px;
-        }
-
-        h2 {
-            color: #343a40;
-            margin-bottom: 20px;
-        }
-
-        .btn-group {
-            margin-bottom: 20px;
-        }
-
-        a.button {
-            display: inline-block;
-            padding: 10px 16px;
-            margin-right: 10px;
-            background: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        a.button:hover {
-            background: #0056b3;
-        }
-
-        a.logout {
-            background: #dc3545;
-        }
-
-        a.logout:hover {
-            background: #c82333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        th, td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #dee2e6;
-            text-align: left;
-        }
-
-        th {
-            background-color: #343a40;
-            color: white;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        td a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        td a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin Cafe</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f4f4f4;
+    }
+    .sidebar {
+      width: 220px;
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px;
+      height: 100vh;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .sidebar a {
+      display: block;
+      padding: 12px 20px;
+      margin-bottom: 10px;
+      color: white;
+      text-decoration: none;
+      background-color: #34495e;
+      border-radius: 5px;
+    }
+    .sidebar a:hover {
+      background-color: #1abc9c;
+    }
+    .main {
+      flex: 1;
+      padding: 20px;
+    }
+    .cards {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    .card {
+      background: #3498db;
+      color: white;
+      flex: 1;
+      padding: 20px;
+      border-radius: 10px;
+      min-width: 200px;
+    }
+    .card h3 {
+      margin-bottom: 10px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 50px;
+      color: #888;
+    }
+  </style>
 </head>
 <body>
+  <div class="sidebar">
+    <h2>Cafe Admin</h2>
+    <a href="#">Dashboard</a>
+    <a href="manajemen_produk.php">Manajemen Produk</a>
+    <a href="admin_pesanan.php">Pesanan</a>
+    <a href="manajemen_user.php">Pengguna</a>
+    <a href="logout.php">Logout</a>
+  </div>
 
-<h2>Dashboard Admin - Ngacup</h2>
+  <div class="main">
+    <h1>Selamat Datang, Admin!</h1>
 
-<div class="btn-group">
-    <a href="tambah_menu.php" class="button">+ Tambah Menu</a>
-    <a href="../logout.php" class="button logout">Logout</a>
-</div>
+    <div class="cards">
+      <div class="card">
+        <h3>Total Pendapatan</h3>
+        <p>Rp <?= number_format($totalPendapatan, 0, ',', '.') ?></p>
+      </div>
+      <div class="card" style="background: #1abc9c;">
+        <h3>Total Pesanan</h3>
+        <p><?= $totalPesanan ?> Hari Ini</p>
+      </div>
+      <div class="card" style="background: #f39c12;">
+        <h3>Penjualan Hari Ini</h3>
+        <p><?= $persenPenjualan ?>%</p>
+      </div>
+      <div class="card" style="background: #e74c3c;">
+        <h3>Pengeluaran</h3>
+        <p>Rp <?= number_format($pengeluaran, 0, ',', '.') ?></p>
+      </div>
+    </div>
 
-<table>
-    <tr>
-        <th>Nama</th>
-        <th>Kategori</th>
-        <th>Harga Hot</th>
-        <th>Harga Cold</th>
-        <th>Best Seller</th>
-        <th>Recommended</th>
-        <th>Aksi</th>
-    </tr>
-
-    <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) : ?>
-        <tr>
-            <td><?= htmlspecialchars($row['nama_produk']) ?></td>
-            <td><?= htmlspecialchars($row['kategori']) ?></td>
-            <td><?= $row['harga_hot'] ? 'Rp ' . number_format($row['harga_hot']) : '-' ?></td>
-            <td><?= $row['harga_cold'] ? 'Rp ' . number_format($row['harga_cold']) : '-' ?></td>
-            <td><?= $row['is_best_seller'] ? '✔️' : '-' ?></td>
-            <td><?= $row['is_recommended'] ? '⭐' : '-' ?></td>
-            <td>
-                <a href="edit_menu.php?id=<?= $row['id'] ?>">Edit</a> |
-                <a href="hapus_menu.php?id=<?= $row['id'] ?>" onclick="return confirm('Yakin ingin menghapus menu ini?')">Hapus</a>
-            </td>
-        </tr>
-    <?php endwhile; ?>
-</table>
-
-<?php require_once '../includes/footer.php'; ?>
-
+    <div class="footer">
+      &copy; <?= date('Y') ?> Cafe Shop. Semua hak dilindungi.
+    </div>
+  </div>
 </body>
 </html>
