@@ -41,7 +41,7 @@
 - Admin dapat mengubah status pesanan → sistem mengirim notifikasi ke pengguna.
 
 # Teknologi yang Digunakan
-- Frontend: HTML, CSS, JavaScript
+- Frontend: HTML, CSS, PHP
 - Backend: PHP
 - Database: MySQL
 - Library Tambahan: Bootstrap
