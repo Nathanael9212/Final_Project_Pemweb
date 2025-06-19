@@ -44,7 +44,6 @@
 - Frontend: HTML, CSS, PHP
 - Backend: PHP
 - Database: MySQL
-- Library Tambahan: Bootstrap
 
 # Fitur Utama
 🔐 Autentikasi (Login & Register)
